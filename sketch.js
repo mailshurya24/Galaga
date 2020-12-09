@@ -3,7 +3,6 @@ var backgroundImg,rand_sprites;
 var edges,enemy1,enemy2,enemy3,enemy4,enemy5,enemy6,enemy7,enemy8,enemy9,enemy10,enemyImg,enemy_array=[];
 var playerBullet1Img,playerBullet2Img;
 var enemyBulletImg,bossBulletImg;
-var arrayInd;
 
 function preload()
 {
@@ -14,13 +13,14 @@ function preload()
     enemyBulletImg = loadImage('images/EnemyBullet.png');
     bossBulletImg= loadImage('images/BossBullet.png');
     enemyImg = loadImage('images/Enemy.png');
+    bossImg = loadImage('images/Boss.png');
 }
 
 function setup()
 {
     var canvas =  createCanvas(800,1200);
     var x = (windowWidth - width)/2;
-    var y = (windowHeight - height);
+    var y = 1200;
     canvas.position(x,y);
 
     player = createSprite(400,1150);
@@ -152,8 +152,20 @@ function draw()
     
     spawnEnemy();
 
+    for(var i = 0; i<enemy_array.length; i++)
+    {
+    if(bullet1Group.isTouching(enemy_array[i]))
+    {
+        enemy_array[i].destroy();
+       // enemy_array[i].destroy();
+    }
 
-    
+    if(bullet2Group.isTouching(enemy_array[i]))
+    {
+        enemy_array[i].pop();
+        enemy_array[i].destroy();
+    }
+}    
     drawSprites();
 }
 
@@ -165,7 +177,7 @@ function spawnEnemy()
         enemy.display();
         enemy.lifetime = 60;*/
         rn = Math.round(random(1,11));
-            switch(rn)
+            switch(1)
             {
                 case 1: if(player.x < canvas.width/4)
                         {
