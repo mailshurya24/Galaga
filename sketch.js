@@ -1,38 +1,44 @@
+//variables
 var player, playerImg;
-var backgroundImg,rand_sprites;
-var edges,enemy1,enemy2,enemy3,enemy4,enemy5,enemy6,enemy7,enemy8,enemy9,enemy10,enemyImg,enemy_array=[];
+var backgroundImg;
+var edges,enemy1,enemy2,enemy3,enemy4,enemy5,enemy6,enemy7,enemy8,enemy9,enemy10,enemyImg,enemyArray=[];
 var playerBullet1Img,playerBullet2Img;
-var enemyBulletImg,bossBulletImg;
+var bossBulletImg;
 var score = 0; 
 
+//preload function
 function preload()
 {
+//loading the images
     playerImg = loadImage('spacecraft.png');
     backgroundImg = loadImage('background.jpg'); 
     playerBullet1Img = loadImage('Bullet1.png');
     playerBullet2Img = loadImage('Bullet2.png');
-    enemyBulletImg = loadImage('EnemyBullet.png');
+//  enemyBulletImg = loadImage('EnemyBullet.png');
     bossBulletImg= loadImage('BossBullet.png');
     enemyImg = loadImage('Enemy.png');
     bossImg = loadImage('Boss.png');
 }
 
+//setup function
 function setup()
 {
+    //creating the canvas
     var canvas =  createCanvas(1600,1200);
     var x = (windowWidth - width)/2;
     var y = 1200;
     canvas.position(x,y);
-    
-    
-
+  
+    //player sprite
     player = createSprite(450,1150);
     player.addImage(playerImg);
     player.scale = 0.18;    
 
+    //groups for the bullet
     bullet1Group = new Group();
     bullet2Group = new Group();
 
+//enemies
     enemy1 = createSprite(canvas.width/2-250,450,30,30);
     enemy1.addImage(enemyImg);
     enemy1.scale = 0.1;
@@ -89,30 +95,35 @@ function setup()
     enemy11.scale = 0.1;
     enemy11.velocityY=2;
 
-    enemy_array.push(enemy1);
-    enemy_array.push(enemy2);
-    enemy_array.push(enemy3);
-    enemy_array.push(enemy4);
-    enemy_array.push(enemy5);
-    enemy_array.push(enemy6);
-    enemy_array.push(enemy7);
-    enemy_array.push(enemy8);
-    enemy_array.push(enemy9);
-    enemy_array.push(enemy10);
-    enemy_array.push(enemy11);
+    //enemy array
+    enemyArray.push(enemy1);
+    enemyArray.push(enemy2);
+    enemyArray.push(enemy3);
+    enemyArray.push(enemy4);
+    enemyArray.push(enemy5);
+    enemyArray.push(enemy6);
+    enemyArray.push(enemy7);
+    enemyArray.push(enemy8);
+    enemyArray.push(enemy9);
+    enemyArray.push(enemy10);
+    enemyArray.push(enemy11);
 
+    //creating edge boundaries
     edges =  createEdgeSprites();
 }
 
 function draw()
 {
+    //background image
     background(backgroundImg);
 
   //  console.log(windowWidth);
     
+  //make the player stop moving if no movement key is pressed
     player.velocityX = 0;
     player.velocityY = 0;
 
+    //moving the player
     if(keyDown(UP_ARROW))
     {
         player.velocityY = -5;
@@ -133,48 +144,63 @@ function draw()
         player.velocityX = 5;
     }
 
+    //make the player remain within the canvas
     player.collide(edges);
 
+    //fire player bullet 1
     if(keyDown("space"))
     {
      firePB1();
     }
 
+    //fire player bullet 2
     if(keyDown("b"))
     {
      firePB2();
     }
    
-    for(var i=0;i<enemy_array.length;i++)
+    //stop the enemies if they go out of the canvas
+    for(var i=0;i<enemyArray.length;i++)
     {
-      if(enemy_array[i].y === 500)
+      if(enemyArray[i].y === 500)
         {
-            enemy_array[i].velocityY=0;          
+            enemyArray[i].velocityY=0;          
         }
     }
     
+    //spawn enemies
     spawnEnemy();
 
-  for(var i = 0; i<enemy_array.length; i++)
+    //spawn second wave of enemies
+    if(score>33)
     {
-    if(bullet1Group.isTouching(enemy_array[i]))
+        spawnEnemy();
+    }
+
+//destroy the enemies if they get shot by bullets
+  for(var i = 0; i<enemyArray.length; i++)
+{
+    if(bullet1Group.isTouching(enemyArray[i]))
     {
-       enemy_array[i].destroy();
+       enemyArray[i].destroy();
        score = score + 3;
     }
 
-    if(bullet2Group.isTouching(enemy_array[i]))
+    if(bullet2Group.isTouching(enemyArray[i]))
     {
-        enemy_array[i].destroy();
+        enemyArray[i].destroy();
         score = score + 3;
     }
+}
 
-    }
+    //console.log(backgroundImg.height);
+    
+    //draw sprite objects on the screen
     drawSprites();
 
 }    
    
-
+//spawning the enemies
 function spawnEnemy()
 {
     if(frameCount % 50 === 0)
@@ -188,7 +214,7 @@ function spawnEnemy()
         var y = 1200;
         canvas.position(x,y);*/
 
-        rn = Math.round(random(1,2));
+        rn = Math.round(random(1,11));
             switch(rn)
             {
                 case 1: if(player.x > enemy1.x)
@@ -221,7 +247,7 @@ function spawnEnemy()
                         break;
 
                         
-                case 3: if(player.x < canvas.width/4)
+                case 3: if(player.x > enemy3.x)
                 {
                     enemy3.rotation = -15;
                     enemy3.velocityX=2;
@@ -236,7 +262,7 @@ function spawnEnemy()
                         break;
 
 
-                case 4: if(player.x < canvas.width/4)
+                case 4: if(player.x > enemy4.x)
                 {
                     enemy4.rotation = -15;
                     enemy4.velocityX=2;
@@ -251,7 +277,7 @@ function spawnEnemy()
                         break;
 
 
-                case 5: if(player.x < canvas.width/4)
+                case 5: if(player.x > enemy5.x)
                 {
                     enemy5.rotation = -15;
                     enemy5.velocityX=2;
@@ -266,7 +292,7 @@ function spawnEnemy()
                         break;
 
 
-                case 6: if(player.x < canvas.width/4)
+                case 6: if(player.x > enemy6.x)
                 {
                     enemy6.rotation = -15;
                     enemy6.velocityX=2;
@@ -281,7 +307,7 @@ function spawnEnemy()
                         break;
 
 
-                case 7: if(player.x < canvas.width/4)
+                case 7: if(player.x > enemy7.x)
                 {
                     enemy7.rotation = -15;
                     enemy7.velocityX=2;
@@ -296,7 +322,7 @@ function spawnEnemy()
                         break;
 
 
-                case 8: if(player.x < canvas.width/4)
+                case 8: if(player.x > enemy8.x)
                 {
                     enemy8.rotation = -15;
                     enemy8.velocityX=2;
@@ -311,7 +337,7 @@ function spawnEnemy()
                         break;
 
 
-                case 9: if(player.x < canvas.width/4)
+                case 9: if(player.x > enemy9.x)
                 {
                     enemy9.rotation = -15;
                     enemy9.velocityX=2;
@@ -326,7 +352,7 @@ function spawnEnemy()
                         break;
 
 
-                case 10: if(player.x < canvas.width/4)
+                case 10: if(player.x > enemy10.x)
                 {
                     enemy10.rotation = -15;
                     enemy10.velocityX=2;
@@ -341,7 +367,7 @@ function spawnEnemy()
                         break;
 
                         
-                case 11: if(player.x < canvas.width/4)
+                case 11: if(player.x > enemy11.x)
                 {
                     enemy11.rotation = -15;
                     enemy11.velocityX=2;
@@ -358,66 +384,67 @@ function spawnEnemy()
     }
 }
 
+//spawn the bosses if a particular score is reached
 function spawnBoss()
 {
 //spawn boss
-if(score>33)
+if(score>=66 && frameCount % 60 === 0)
 {
     boss1 = createSprite(canvas.width/2-250,450,30,30);
-    boss1.addImage(enemyImg);
+    boss1.addImage(bossImg);
     boss1.scale = 0.1;
-    boss1.velocityY=2;
+   // boss1.velocityY=2;
     //console.log(canvas.width/2);
 
     boss2 = createSprite(canvas.width/2-200,450,30,30);
-    boss2.addImage(enemyImg);
+    boss2.addImage(bossImg);
     boss2.scale = 0.1;
-    boss2.velocityY=2;
+    //boss2.velocityY=2;
 
     boss3 = createSprite(canvas.width/2-150,450,30,30);
-    boss3.addImage(enemyImg);
+    boss3.addImage(bossImg);
     boss3.scale = 0.1;
-    boss3.velocityY=2;
+    //boss3.velocityY=2;
 
     boss4= createSprite(canvas.width/2-100,450,30,30);
-    boss4.addImage(enemyImg);
+    boss4.addImage(bossImg);
     boss4.scale = 0.1;
-    boss4.velocityY=2;
+    //boss4.velocityY=2;
 
     boss5= createSprite(canvas.width/2-50,450,30,30);
-    boss5.addImage(enemyImg);
+    boss5.addImage(bossImg);
     boss5.scale = 0.1;
-    boss5.velocityY=2;
+    //boss5.velocityY=2;
 
     boss6 = createSprite(canvas.width/2,450,30,30);
-    boss6.addImage(enemyImg);
+    boss6.addImage(bossImg);
     boss6.scale = 0.1;
-    boss6.velocityY=2;
+    //boss6.velocityY=2;
 
     boss7 = createSprite(canvas.width/2+50,450,30,30);
-    boss7.addImage(enemyImg);
+    boss7.addImage(bossImg);
     boss7.scale = 0.1;
-    boss7.velocityY=2;
+    //boss7.velocityY=2;
 
-  /*  enemy8 = createSprite(canvas.width/2+100,450,30,30);
-    enemy8.addImage(enemyImg);
-    enemy8.scale = 0.1;
-    enemy8.velocityY=2;
+    boss8 = createSprite(canvas.width/2+100,450,30,30);
+    boss8.addImage(bossImg);
+    boss8.scale = 0.1;
+    //boss8.velocityY=2;
 
-    enemy9= createSprite(canvas.width/2+150,450,30,30);
-    enemy9.addImage(enemyImg);
-    enemy9.scale = 0.1;
-    enemy9.velocityY=2;
+    boss9= createSprite(canvas.width/2+150,450,30,30);
+    boss9.addImage(bossImg);
+    boss9.scale = 0.1;
+    //boss9.velocityY=2;
 
-    enemy10= createSprite(canvas.width/2+200,450,30,30);
-    enemy10.addImage(enemyImg);
-    enemy10.scale = 0.1;
-    enemy10.velocityY=2;*/
-
+    boss10= createSprite(canvas.width/2+200,450,30,30);
+    boss10.addImage(bossImg);
+    boss10.scale = 0.1;
+    //boss10.velocityY=2;
 }
 
 }
 
+//player bullet 1 firing
 function firePB1()
 {
 //fire bullet 1 on space pressed
@@ -432,6 +459,7 @@ bullet1.scale=0.05;
 bullet1Group.add(bullet1);
 }
 
+//player bullet 2 firing
 function firePB2()
 {
 //fire bullet 2 on B pressed
