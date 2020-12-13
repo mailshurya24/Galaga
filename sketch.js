@@ -3,7 +3,7 @@ var player, playerImg;
 var backgroundImg;
 var edges,enemy1,enemy2,enemy3,enemy4,enemy5,enemy6,enemy7,enemy8,enemy9,enemy10,enemyImg,enemyArray=[];
 var playerBullet1Img,playerBullet2Img;
-var bossBulletImg;
+var bossBulletImg,bossArray = [];
 var score = 0; 
 
 //preload function
@@ -37,6 +37,9 @@ function setup()
     //groups for the bullet
     bullet1Group = new Group();
     bullet2Group = new Group();
+
+    //group for the bosses
+    bossGroup = new Group();
 
 //enemies
     enemy1 = createSprite(canvas.width/2-250,450,30,30);
@@ -172,7 +175,7 @@ function draw()
     spawnEnemy();
 
     //spawn second wave of enemies
-    if(score>33)
+    if(score>25)
     {
         spawnEnemy();
     }
@@ -193,10 +196,42 @@ function draw()
     }
 }
 
+    for(var i = 0; i<enemyArray.length; i++)
+    {
+        if(enemyArray[i].isTouching(player))
+        {
+            player.destroy();
+        }
+    }
+
+    //level 2 - spawning BOSSES
+    if(score>=40 && frameCount % 60 === 0)
+    {
+        spawnBoss();
+    }
+
+    bossFiring();
+
+    //destroy the bosses if and only if they get shot by bullet 2
+    for(var i = 0; i<bossArray.length; i++)
+    {
+        if(bullet2Group.isTouching(bossArray[i]))
+        {
+            bossArray[i].destroy();
+            score = score + 5;
+        }
+    }    
+
+
     //console.log(backgroundImg.height);
     
     //draw sprite objects on the screen
     drawSprites();
+
+   //text to display score
+    fill("red");
+    textSize(18);
+    text("Score: "+score,1480,1150);
 
 }    
    
@@ -388,8 +423,6 @@ function spawnEnemy()
 function spawnBoss()
 {
 //spawn boss
-if(score>=66 && frameCount % 60 === 0)
-{
     boss1 = createSprite(canvas.width/2-250,450,30,30);
     boss1.addImage(bossImg);
     boss1.scale = 0.1;
@@ -440,9 +473,21 @@ if(score>=66 && frameCount % 60 === 0)
     boss10.addImage(bossImg);
     boss10.scale = 0.1;
     //boss10.velocityY=2;
-}
+
+    bossArray.push(boss1);
+    bossArray.push(boss2);
+    bossArray.push(boss3);
+    bossArray.push(boss4);
+    bossArray.push(boss5);
+    bossArray.push(boss6);
+    bossArray.push(boss7);
+    bossArray.push(boss8);
+    bossArray.push(boss9);
+    bossArray.push(boss10);
 
 }
+
+
 
 //player bullet 1 firing
 function firePB1()
@@ -451,7 +496,7 @@ function firePB1()
 var bullet1 = createSprite(200,300,20,20);
 bullet1.x = player.x;
 bullet1.y = player.y - 50;
-bullet1.velocityY = -2;
+bullet1.velocityY = -10;
 //bullet1.shapeColor = "yellow";
 bullet1.addImage(playerBullet1Img);
 bullet1.scale=0.05;
@@ -466,7 +511,7 @@ function firePB2()
 var bullet2 = createSprite(200,300,20,20);
 bullet2.x = player.x;
 bullet2.y = player.y - 50;
-bullet2.velocityY = -2;
+bullet2.velocityY = -6;
 //bullet2.shapeColor = "green";
 bullet2.addImage(playerBullet2Img);
 bullet2.scale=2;
